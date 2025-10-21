@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#0b1116" />
+  <title>QRI — Quariosity Staging</title>
+  <link rel="icon" href="/favicon.ico">
+  <style>
+    :root{
+      --bg:#0b1116;--ink:#e6f1f5;--muted:#9bb3bd;--accent:#00d1b2;--accent-2:#007a66;
+      --card:#0f1720;--border:#16222c;--nav-h:72px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:radial-gradient(120% 140% at 50% 0%,#0d141b 0%, var(--bg) 55%);color:var(--ink);font:400 16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
+    a{color:inherit}
+
+    /* Layout */
+    .shell{min-height:100%;display:grid;grid-template-rows:auto 1fr var(--nav-h)}
+    header{position:sticky;top:0;z-index:40;background:linear-gradient(180deg,rgba(11,17,22,.95),rgba(11,17,22,.70) 80%,transparent)}
+    .bar{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border)}
+    .logo{display:flex;align-items:center;gap:10px;font-weight:700}
+    .logo-badge{width:28px;height:28px;border-radius:8px;background:radial-gradient(140% 140% at 30% 20%, var(--accent) 0%, #00a389 45%, var(--accent-2) 100%);display:grid;place-items:center;font-weight:800}
+
+    main{padding:16px; padding-bottom:24px}
+
+    .hero{display:grid;gap:12px;margin:4px 0 14px}
+    .hero h1{font-size:clamp(22px,5.5vw,32px);margin:0}
+    .hero p{color:var(--muted);margin:.25rem 0 0}
+
+    /* Carousel */
+    .carousel{position:relative;overflow:hidden;border-radius:16px;background:linear-gradient(180deg,#0e1820,#0c141a);border:1px solid var(--border)}
+    .rail{display:flex;scroll-snap-type:x mandatory;overflow-x:auto;gap:12px;padding:12px 12px 16px;margin:0;scroll-behavior:smooth}
+    .rail::-webkit-scrollbar{display:none}
+    .tile{flex:0 0 78%;max-width:78%;aspect-ratio:16/9;border-radius:14px;background:linear-gradient(145deg,#132536,#0f1d2b);border:1px solid var(--border);padding:12px;display:flex;flex-direction:column;justify-content:flex-end}
+    .tile h3{margin:0 0 6px;font-size:clamp(16px,4.2vw,18px)}
+    .tile p{margin:0;color:var(--muted);font-size:14px}
+
+    .dots{display:flex;gap:6px;position:absolute;right:12px;bottom:10px}
+    .dot{width:6px;height:6px;border-radius:999px;background:#294452;opacity:.6}
+    .dot.is-active{opacity:1;background:var(--accent)}
+
+    /* Sections */
+    .section-title{display:flex;align-items:center;justify-content:space-between;margin:16px 2px 10px}
+    .section-title h2{margin:0;font-size:clamp(16px,4.5vw,18px)}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .card{background:linear-gradient(145deg,#0f1822,#0e141a);border:1px solid var(--border);border-radius:14px;padding:12px}
+    .card h4{margin:0 0 6px;font-size:15px}
+    .card p{margin:0;color:var(--muted);font-size:13px}
+
+    /* Bottom nav */
+    nav.bottom{position:sticky;bottom:0;z-index:50;background:rgba(11,17,22,.92);backdrop-filter:blur(10px);border-top:1px solid var(--border);height:var(--nav-h)}
+    .tabs{display:grid;grid-template-columns:repeat(5,1fr);height:100%}
+    .tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-decoration:none;color:var(--muted);font-size:12px}
+    .tab[aria-current="page"], .tab.is-active{color:var(--ink)}
+    .tab svg{width:22px;height:22px}
+
+    /* Quari floating button */
+    :root{--bottom-nav-height: var(--nav-h)}
+    .quari-fab{position:fixed;right:clamp(12px,2.4vw,20px);bottom:calc(12px + var(--bottom-nav-height));width:clamp(56px,7.5vw,72px);height:clamp(56px,7.5vw,72px);border-radius:9999px;display:grid;place-items:center;font:700 clamp(20px,3.8vw,28px)/1 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;text-decoration:none;color:#fff;background:radial-gradient(120% 140% at 30% 20%, var(--accent) 0%, #00a389 45%, var(--accent-2) 100%);box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.15);z-index:9999;outline:none;transition:transform .15s ease, box-shadow .15s ease}
+    .quari-fab:hover{transform:translateY(-2px)}
+    .quari-fab:focus-visible{box-shadow:0 0 0 3px #fff,0 0 0 6px var(--accent)}
+
+    /* Desktop tweaks */
+    @media (min-width:900px){
+      .shell{grid-template-rows:auto 1fr}
+      nav.bottom{position:fixed;right:16px;bottom:16px;left:auto;width:520px;border-radius:18px}
+      .quari-fab{bottom:calc(16px + var(--nav-h));}
+      main{padding:28px 28px 84px}
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="bar">
+        <div class="logo" aria-label="Quantum Research Institute">
+          <div class="logo-badge">Q</div>
+          <div>Quantum Research Institute</div>
+        </div>
+        <div style="margin-left:auto;color:var(--muted);font-size:14px">Quariosity staging</div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1>Your pocket lab for curiosity</h1>
+        <p>Mobile-first layout with a persistent Quari button and a bottom menu. This is the staging build while we iterate on the desktop phone UI.</p>
+      </section>
+
+      <section class="carousel" aria-label="Featured">
+        <div class="rail" id="rail">
+          <article class="tile">
+            <h3>Quantum Questions</h3>
+            <p>Thought experiments you can answer in a minute.</p>
+          </article>
+          <article class="tile">
+            <h3>Theory Builder</h3>
+            <p>Turn a spark into structure with guided steps.</p>
+          </article>
+          <article class="tile">
+            <h3>Field Notes</h3>
+            <p>Short reads on coherence, emergence, and time.</p>
+          </article>
+        </div>
+        <div class="dots" id="dots" aria-hidden="true"></div>
+      </section>
+
+      <div class="section-title"><h2>Start here</h2><a href="#" style="color:var(--accent)">See all</a></div>
+      <div class="grid">
+        <a class="card" href="#">
+          <h4>Beginner’s Path</h4>
+          <p>Five tiny lessons to warm up the mind.</p>
+        </a>
+        <a class="card" href="#">
+          <h4>Glossary that doesn’t gatekeep</h4>
+          <p>Plain language definitions that level everyone up.</p>
+        </a>
+        <a class="card" href="#">
+          <h4>One Equation a Day</h4>
+          <p>Micro explanations with intuition first.</p>
+        </a>
+        <a class="card" href="#">
+          <h4>Community Experiments</h4>
+          <p>What can we test at home with cheap parts.</p>
+        </a>
+      </div>
+    </main>
+
+    <nav class="bottom" aria-label="Primary">
+      <div class="tabs" id="tabs">
+        <a class="tab is-active" href="#home" data-tab="home" aria-current="page" aria-label="Home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M9 22V12h6v10"/></svg>
+          <span>Home</span>
+        </a>
+        <a class="tab" href="#find" data-tab="find" aria-label="Find">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
+          <span>Find</span>
+        </a>
+        <a class="tab" href="#library" data-tab="library" aria-label="Library">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V6a2 2 0 0 1 2-2h10"/><path d="M20 22V8a2 2 0 0 0-2-2H6"/><path d="M8 8h8"/><path d="M8 12h8"/><path d="M8 16h6"/></svg>
+          <span>Library</span>
+        </a>
+        <a class="tab" href="#audio" data-tab="audio" aria-label="Audio">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          <span>Audio</span>
+        </a>
+        <a class="tab" href="#account" data-tab="account" aria-label="Account">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 1 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>Account</span>
+        </a>
+      </div>
+    </nav>
+  </div>
+
+  <a href="#quari" class="quari-fab" aria-label="Open Quari" title="Open Quari">Q</a>
+
+  <script>
+    // Bottom tab active state
+    const tabs = document.querySelectorAll('.tab');
+    tabs.forEach(t => t.addEventListener('click', e => {
+      tabs.forEach(x => {x.classList.remove('is-active'); x.removeAttribute('aria-current');});
+      t.classList.add('is-active'); t.setAttribute('aria-current','page');
+    }));
+
+    // Simple carousel dots and auto-advance that pauses on user scroll
+    const rail = document.getElementById('rail');
+    const dotsWrap = document.getElementById('dots');
+    const tiles = Array.from(rail.children);
+    tiles.forEach((_,i)=>{
+      const d=document.createElement('div');d.className='dot'+(i===0?' is-active':'');dotsWrap.appendChild(d);
+    });
+    function setActiveByScroll(){
+      const cw = rail.clientWidth;
+      const idx = Math.round(rail.scrollLeft / (cw*0.78 + 12));
+      Array.from(dotsWrap.children).forEach((d,i)=>d.classList.toggle('is-active', i===idx));
+    }
+    rail.addEventListener('scroll', ()=>{ setActiveByScroll(); userInteracted = true; });
+
+    let userInteracted = false;
+    let i = 0; 
+    setInterval(()=>{
+      if(userInteracted) return; 
+      i = (i+1)%tiles.length;
+      tiles[i].scrollIntoView({behavior:'smooth',inline:'start'});
+      Array.from(dotsWrap.children).forEach((d,j)=>d.classList.toggle('is-active', j===i));
+    }, 3500);
+  </script>
+</body>
+</html>
